@@ -33,7 +33,6 @@
             String password = "mypassword";
             conn = DriverManager.getConnection(url, username, password);
 
-            // Retrieve unidad_de_congelamiento data
             String sqlUnidad = "SELECT cop, potencia_entrada FROM unidad_de_congelamiento WHERE id = ?";
             pstmt = conn.prepareStatement(sqlUnidad);
             pstmt.setInt(1, unidadId);
@@ -47,11 +46,11 @@
             rs.close();
             pstmt.close();
 
-            // Retrieve liquido_concreto and liquidos data
             String sqlLiquido = "SELECT lc.temperatura_inicial, lc.temperatura_final, l.densidad, l.calor_latente, l.calor_especifico " +
                                 "FROM liquido_concreto lc " +
                                 "JOIN liquidos l ON lc.liquido_id = l.id " +
                                 "WHERE lc.id = ?";
+
             pstmt = conn.prepareStatement(sqlLiquido);
             pstmt.setInt(1, liquidoConcretoId);
             rs = pstmt.executeQuery();
@@ -72,11 +71,9 @@
             rs.close();
             pstmt.close();
 
-            // Perform calculations
             double W_in = potenciaEntrada * 1000 * tiempo * 3600; // Energy input in Joules
             double Q_L = cop * W_in; // Heat removed in Joules
 
-            // Total heat required per kg
             double Q_per_kg = calorEspecifico * (tempInicial - tempFinal) + calorLatente;
 
             if (Q_per_kg <= 0) {
