@@ -1,0 +1,268 @@
+/* styles.css */
+
+/* styles.css */
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #4CAF50;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+/* Styling for the login section */
+#login {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e0e0e0;
+  }
+  
+  #login h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 24px;
+  }
+  
+  #login form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  #login form div {
+    margin-bottom: 15px;
+  }
+  
+  #login label {
+    font-size: 14px;
+    font-weight: bold;
+    color: #555;
+    margin-bottom: 5px;
+    display: block;
+  }
+  
+  #login input[type="text"],
+  #login input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+  }
+  
+  #login input[type="text"]:focus,
+  #login input[type="password"]:focus {
+    border-color: #007bff;
+    outline: none;
+  }
+  
+  #login input[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  #login input[type="submit"]:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Error message styling */
+  #login p {
+    text-align: center;
+    font-size: 14px;
+  }
+  
+  #login p[style*="color:red;"] {
+    color: #ff4d4f;
+    font-weight: bold;
+  }
+  
+  /* Responsive design */
+  @media (max-width: 600px) {
+    #login {
+      width: 90%;
+      margin: 20px auto;
+      padding: 15px;
+    }
+  
+    #login h2 {
+      font-size: 20px;
+    }
+  
+    #login input[type="submit"] {
+      font-size: 14px;
+    }
+  }
+  
+.auth-section {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+.login-form, .create-section, .calculation-section {
+    margin: 20px;
+}
+
+.login-form input[type="text"],
+.login-form input[type="password"] {
+    display: block;
+    margin-bottom: 10px;
+    padding: 8px;
+    width: 200px;
+}
+
+.login-form input[type="submit"],
+.calculation-section input[type="submit"],
+.create-section input[type="submit"] {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+.login-form input[type="submit"]:hover,
+.calculation-section input[type="submit"]:hover,
+.create-section input[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+.error {
+    color: red;
+}
+
+.message {
+    color: green;
+}
+
+
+/* Reset default styles for consistency across browsers */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Make html and body take full viewport height and width */
+html, body {
+    height: 100%;
+    width: 100%;
+    font-family: Arial, sans-serif;
+}
+
+/* Define grid layout for the body */
+body {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    grid-template-columns: 1fr;
+    grid-template-areas:
+        "header"
+        "main";
+    height: 100vh;
+    width: 100vw;
+}
+
+/* Style the header */
+header {
+    grid-area: header;
+    background-color: #4CAF50;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+/* Define grid layout for main content */
+main {
+    grid-area: main;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-rows: auto;
+    gap: 20px;
+    padding: 20px;
+    background-color: #f5f5f5;
+    overflow-y: auto;
+}
+
+/* Style the create sections */
+.create-section {
+    background-color: #ffffff;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.create-section h2 {
+    margin-bottom: 15px;
+    color: #333;
+}
+
+/* Style the calculation section */
+.calculation-section {
+    background-color: #ffffff;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.calculation-section h2 {
+    margin-bottom: 15px;
+    color: #333;
+}
+
+/* Style forms */
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    margin-top: 10px;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input, select, textarea {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+input[type="submit"], button {
+    margin-top: 20px;
+    padding: 12px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+input[type="submit"]:hover, button:hover {
+    background-color: #45a049;
+}
+
+/* Make the grid responsive */
+@media (max-width: 768px) {
+    main {
+        grid-template-columns: 1fr;
+    }
+}

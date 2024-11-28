@@ -17,6 +17,8 @@ CREATE TABLE refrigeradores_concretos (
     FOREIGN KEY (unidad_id) REFERENCES unidad_de_congelamiento(id)
 );
 
+-- // i think liquidos missing punto de congelacion?
+
 CREATE TABLE liquidos (
     id SERIAL PRIMARY KEY,
     nombre VARCHAR(255) NOT NULL,     -- Name of the liquid
@@ -48,6 +50,18 @@ CREATE TABLE calculos_congelacion (
     FOREIGN KEY (liquido_concreto_id) REFERENCES liquido_concreto(id)
 );
 
+CREATE TABLE usuarios (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL, -- In production, store hashed passwords
+    role VARCHAR(50) NOT NULL -- e.g., 'admin', 'user'
+);
+
+-- Insert initial users
+INSERT INTO usuarios (username, password, role) VALUES
+('admin', 'admin123', 'admin'),
+('user1', 'user123', 'user');
+
 -- Insert initial data
 INSERT INTO unidad_de_congelamiento (nombre, cop, potencia_entrada, descripcion)
 VALUES ('Congelador Estandar', 7, 1, 'Congelador con COP de 7 y potencia de entrada de 1kW');
@@ -57,3 +71,6 @@ VALUES ('Agua', 1000, 334000, 4186);
 
 INSERT INTO liquido_concreto (liquido_id, volumen, temperatura_inicial, temperatura_final)
 VALUES (1, 0, 0, 0);  -- Volume is zero since it's to be calculated
+
+INSERT INTO liquido_concreto (liquido_id, volumen, temperatura_inicial, temperatura_final)
+VALUES (1, 0, 20, 0);  -- Volume is zero since it's to be calculated

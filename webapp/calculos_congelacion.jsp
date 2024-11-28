@@ -1,7 +1,3 @@
-<!--  calculos_congelacion.jsp -->
-
-<!-- pls write here -->
-
 <%@ page import="java.sql.*" %>
 <%@ page import="java.text.DecimalFormat" %>
 <%@ page contentType="text/html; charset=UTF-8" %>
@@ -59,53 +55,65 @@
             pstmt = conn.prepareStatement(sqlLiquido);
             pstmt.setInt(1, liquidoConcretoId);
             rs = pstmt.executeQuery();
+
             double densidad = 0;
             double calorLatente = 0;
             double tempInicial = 0;
             double tempFinal = 0;
+            double calorEspecifico = 0;
+
             if (rs.next()) {
-                tempInicial = rs.getDouble("temperatura_inicial");
-                tempFinal = rs.getDouble("temperatura_final");
-                densidad = rs.getDouble("densidad");
-                calorLatente = rs.getDouble("calor_latente");
+                densidad = rs.getDouble("densidad");          // kg/m³
+                calorLatente = rs.getDouble("calor_latente"); // J/kg
+                calorEspecifico = rs.getDouble("calor_especifico"); // J/(kg·K)
+                tempInicial = rs.getDouble("temperatura_inicial"); // °C
+                tempFinal = rs.getDouble("temperatura_final");     // °C
             }
             rs.close();
             pstmt.close();
 
             // Perform calculations
-            double W = potenciaEntrada * 1000 * tiempo * 3600; // W in Joules
-            double Q_L = cop * W; // Heat removed in Joules
-            double masaProducida = Q_L / calorLatente; // kg
-            double volumenProducido = masaProducida / densidad; // m³
-            double energiaConsumida = W / 3600000; // kWh
+            double W_in = potenciaEntrada * 1000 * tiempo * 3600; // Energy input in Joules
+            double Q_L = cop * W_in; // Heat removed in Joules
 
-            // Insert calculation into calculos_congelacion
-            String sqlInsert = "INSERT INTO calculos_congelacion " +
-                               "(unidad_id, liquido_concreto_id, tiempo, volumen_producido, masa_producida, energia_consumida, ql) " +
-                               "VALUES (?, ?, ?, ?, ?, ?, ?)";
-            pstmt = conn.prepareStatement(sqlInsert);
-            pstmt.setInt(1, unidadId);
-            pstmt.setInt(2, liquidoConcretoId);
-            pstmt.setDouble(3, tiempo);
-            pstmt.setDouble(4, volumenProducido * 1000); // liters
-            pstmt.setDouble(5, masaProducida);
-            pstmt.setDouble(6, energiaConsumida);
-            pstmt.setDouble(7, Q_L);
-            pstmt.executeUpdate();
-            pstmt.close();
+            // Total heat required per kg
+            double Q_per_kg = calorEspecifico * (tempInicial - tempFinal) + calorLatente;
 
-            // Display results
-            DecimalFormat df = new DecimalFormat("#.##");
+            if (Q_per_kg <= 0) {
+                out.println("<p>Error: La temperatura inicial debe ser mayor que la temperatura final.</p>");
+            } else {
+                double masaProducida = Q_L / Q_per_kg; // Mass of ice produced in kg
+                double volumenProducido = masaProducida / densidad; // Volume of ice produced in m³
+                double energiaConsumida = W_in / 3600000; // Energy consumed in kWh
+
+                // Insert calculation into calculos_congelacion
+                String sqlInsert = "INSERT INTO calculos_congelacion " +
+                                   "(unidad_id, liquido_concreto_id, tiempo, volumen_producido, masa_producida, energia_consumida, ql) " +
+                                   "VALUES (?, ?, ?, ?, ?, ?, ?)";
+                pstmt = conn.prepareStatement(sqlInsert);
+                pstmt.setInt(1, unidadId);
+                pstmt.setInt(2, liquidoConcretoId);
+                pstmt.setDouble(3, tiempo);
+                pstmt.setDouble(4, volumenProducido * 1000); // Convert m³ to liters
+                pstmt.setDouble(5, masaProducida);
+                pstmt.setDouble(6, energiaConsumida);
+                pstmt.setDouble(7, Q_L);
+                pstmt.executeUpdate();
+                pstmt.close();
+
+                // Display results
+                DecimalFormat df = new DecimalFormat("#.##");
 %>
-            <h2>Resultados del Cálculo de Congelación</h2>
-            <p>Unidad de Congelación ID: <%= unidadId %></p>
-            <p>Líquido Concreto ID: <%= liquidoConcretoId %></p>
-            <p>Tiempo: <%= df.format(tiempo) %> horas</p>
-            <p>Energía Consumida: <%= df.format(energiaConsumida) %> kWh</p>
-            <p>Calor Removido (Q<sub>L</sub>): <%= df.format(Q_L) %> Joules</p>
-            <p>Masa de hielo producida: <%= df.format(masaProducida) %> kg</p>
-            <p>Volumen de hielo producido: <%= df.format(volumenProducido * 1000) %> litros</p>
+                <h2>Resultados del Cálculo de Congelación</h2>
+                <p>Unidad de Congelación ID: <%= unidadId %></p>
+                <p>Líquido Concreto ID: <%= liquidoConcretoId %></p>
+                <p>Tiempo: <%= df.format(tiempo) %> horas</p>
+                <p>Energía Consumida: <%= df.format(energiaConsumida) %> kWh</p>
+                <p>Calor Removido (Q<sub>L</sub>): <%= df.format(Q_L) %> Joules</p>
+                <p>Masa de hielo producida: <%= df.format(masaProducida) %> kg</p>
+                <p>Volumen de hielo producido: <%= df.format(volumenProducido * 1000) %> litros</p>
 <%
+            }
         } catch (Exception e) {
             out.println("<p>Error al realizar el cálculo: " + e.getMessage() + "</p>");
             e.printStackTrace();

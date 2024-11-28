@@ -12,6 +12,8 @@
     <h1>Crear Líquido Concreto</h1>
 
     <form action="/createLiquidoConcreto" method="post">
+        <%-- // servlet form action  --%>
+
         <label for="liquido_id">Selecciona el Líquido:</label>
         <select name="liquido_id" id="liquido_id" required>
             <option value="">--Selecciona--</option>
